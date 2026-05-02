@@ -5,6 +5,9 @@ format: html
 editor: visual
 ---
 
+
+# I converted the original email files into a CSV file and upload to GitHub so the data would be easier to read.
+
 ```{r}
 library(tidyverse)
 
