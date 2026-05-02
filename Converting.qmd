@@ -25,9 +25,9 @@ read_email_folder <-
 ```
 
 ```{r}
-ham_emails <- read_email_folder("C:/Users/ziy80/Data607/Proj#4_spamham/easy_ham", "ham")
+ham_emails <- read_email_folder("Data/easy_ham", "ham")
 
-spam_emails <- read_email_folder("C:/Users/ziy80/Data607/Proj#4_spamham/spam_2", "spam")
+spam_emails <- read_email_folder("Data/spam_2", "spam")
 
 emails <- bind_rows(ham_emails, spam_emails)
 
