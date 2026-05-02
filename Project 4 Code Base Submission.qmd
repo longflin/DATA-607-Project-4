@@ -8,3 +8,89 @@ editor: visual
 ## Overview
 
 For this project, We will use the documents within the ham/spam dataset located at https://spamassassin.apache.org/old/publiccorpus/ . Using these documents, we will use a portion of the documents to create a decision tree data model. In order to create the decision tree data model, we will look at packages such as `rpart` that deal with Recursive Partitioning and Regression Trees. Once the decision tree data model is created, we will work on testing it against the portion of documents that were not used in the initial creation of the decision tree data model. Through testing, we may make improvements to the decision tree data model and then draw final conclusions from that.
+
+
+```{r}
+library(readr)
+
+url <- "https://github.com/longflin/DATA-607-Project-4/raw/refs/heads/main/emails.csv"
+
+emails <- read_csv(url)
+
+emails <- emails %>% 
+  select(-file)
+
+# emails <- emails %>% 
+#   select(-label)
+
+emails <- emails %>% 
+  select(-id)
+
+head(emails)
+```
+
+
+```{r}
+# Install packages if you haven't yet
+# install.packages(c("rpart", "rpart.plot", "caret"))
+
+library(rpart)
+library(rpart.plot)
+library(caret) # Useful for splitting data and evaluation
+
+# Load your data (assuming a CSV named 'spam_data.csv')
+# For this example, we'll assume 'is_spam' is your target variable (1 = Spam, 0 = Ham)
+
+emails$is_spam <- factor(emails$label, levels = c("ham", "spam"))
+```
+
+
+```{r}
+set.seed(8585) # For reproducibility
+index <- createDataPartition(emails$is_spam, p = 0.7, list = FALSE)
+train_data <- emails[index, ]
+test_data  <- emails[-index, ]
+```
+
+```{r}
+# This removes any factor levels that have 0 rows
+train_data$is_spam <- droplevels(train_data$is_spam)
+
+# Build the model
+# '.' means "use all other variables to predict is_spam"
+spam_model <- rpart(is_spam ~ ., 
+                    data = train_data, 
+                    method = "class",
+                    control = rpart.control(cp = 0.01)) # Complexity parameter
+
+```
+
+```{r}
+rpart.plot(spam_model, 
+           type = 4, 
+           extra = 101, 
+           under = TRUE, 
+           cex = 0.8, 
+           main = "Spam Detection Decision Tree")
+
+```
+
+```{r}
+# Predict on test data
+predictions <- predict(spam_model, test_data, type = "class")
+
+# Create a Confusion Matrix
+confusionMatrix(predictions, test_data$is_spam)
+```
+
+```{r}
+# Check your column names again
+colnames(train_data)
+
+# Re-build the model, but EXCLUDE the ID column
+# If your ID column is named 'email_id':
+spam_model <- rpart(is_spam ~ . - file, 
+                    data = train_data, 
+                    method = "class")
+```
+
