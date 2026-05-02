@@ -1,0 +1,51 @@
+---
+title: "Convert email folders to CSV"
+author: "Long Lin, Zihao Yu"
+format: html
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+read_email_folder <-
+  function(folder, label) {
+  
+  files <- list.files(folder, full.names = TRUE, recursive = TRUE)
+  
+  files <- files[!dir.exists(files)]
+  files <- files[basename(files) != "cmds"]
+  
+  tibble(
+    file = basename(files),
+    label = label,
+    text = map_chr(files, ~ paste(readLines(.x, warn = FALSE), collapse = " "))
+  )
+}
+```
+
+```{r}
+ham_emails <- read_email_folder("C:/Users/ziy80/Data607/Proj#4_spamham/easy_ham", "ham")
+
+spam_emails <- read_email_folder("C:/Users/ziy80/Data607/Proj#4_spamham/spam_2", "spam")
+
+emails <- bind_rows(ham_emails, spam_emails)
+
+emails |>
+  count(label)
+```
+
+```{r}
+emails <- 
+  emails |>
+  mutate(id = row_number())
+
+write_csv(emails, "emails.csv")
+```
+
+```{r}
+library(tidyverse)
+
+emails <- read_csv("https://github.com/longflin/DATA-607-Project-4/raw/refs/heads/main/emails.csv")
+```
+
