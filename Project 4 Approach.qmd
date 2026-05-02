@@ -1,0 +1,14 @@
+---
+title: "Project 4 Appoach"
+author: "Long Lin"
+format: html
+editor: visual
+---
+
+## Project 4 Approach
+
+For this project, I plan on using the documents within the ham/spam dataset located at https://spamassassin.apache.org/old/publiccorpus/ . Using these documents, I will use a portion of the documents to create a decision tree data model. In order to create the decision tree data model, I will look at packages such as `rpart` that deal with Recursive Partitioning and Regression Trees. Once the decision tree data model is created, I will work on testing it against the portion of documents that were not used in the initial creation of the decision tree data model. Through testing, I may make improvements to the decision tree data model and then draw final conclusions from that.
+
+### Group Members:
+
+Long Lin, ZIHAO YU
