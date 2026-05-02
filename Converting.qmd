@@ -24,6 +24,7 @@ read_email_folder <-
 }
 ```
 
+# I removed the local file paths.
 ```{r}
 ham_emails <- read_email_folder("Data/easy_ham", "ham")
 
